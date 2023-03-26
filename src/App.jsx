@@ -1,51 +1,17 @@
-import { useState,useEffect } from 'react'
-
+import useWordGame from './Hooks/useWordGame'
 import './App.css'
 
-function App() {
-const STARTING_TIME=15;
-
-  const [text,setText] = useState('');
-  const [timeRemaining,setTimeRemaining]=useState(STARTING_TIME);
-  const [isGameRunning,setIsGameRunning]=useState(false);
-  const [wordCount,setWordCount]=useState(0)
-
-  useEffect(()=>{
-    if(isGameRunning && timeRemaining>0){
-    setTimeout(()=>{
-      setTimeRemaining(prevState=>prevState-1)
-    },1000)
-    } else if(timeRemaining===0){
-     endGame()
-    
-    }
-  },[timeRemaining,isGameRunning]);
-
-  const handleChange=(e)=>{
-    const {value}=e.target;
-    setText(value)
-  }
-
-  const calculateWordCount=(text)=>{ 
-    const words=text.trim().split(" ");
-    const filteredWords=words.filter(word=>word!="")
-    console.log(filteredWords,filteredWords.length)
-    return filteredWords.length;
-   
-  }
-
-  const startGame=()=>{
-       
-    setIsGameRunning(prevState=>!prevState)
-    setTimeRemaining(STARTING_TIME);
-    setWordCount(0);
-    setText("");
-  }
-
-  const endGame=()=>{
-     setIsGameRunning(false);
-     setWordCount(calculateWordCount(text))
-  }
+const App=()=> {
+  
+  const { 
+    text,
+    handleChange,
+    isGameRunning,
+    textAreaRef,
+    timeRemaining,
+    startGame,
+    wordCount
+  }=useWordGame(3);
  
   return (
     <div className="App">
@@ -56,7 +22,7 @@ const STARTING_TIME=15;
             name="text"
             onChange={handleChange}
             disabled={!isGameRunning}
-            
+            ref={textAreaRef}
             />
         <h4>Time remaining:{timeRemaining}</h4>
         <button disabled={isGameRunning} onClick={startGame}>Start</button>
